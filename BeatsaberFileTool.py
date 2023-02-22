@@ -4,6 +4,9 @@ import requests
 import re
 from zipfile import ZipFile
 import json
+from typing import List
+
+from classes.Level import Level
 
 @dataclasses.dataclass
 class BeatsaberFileTool:
@@ -40,14 +43,22 @@ class BeatsaberFileTool:
             
     def addMapToFavedSongs(self, hash: str) -> None:
         with open(self.playerDataPath, "r+") as playerDataFile:
-            palyerData = json.load(playerDataFile)
+            playerData = json.load(playerDataFile)
             string = "custom_level_" + hash.upper()
-            palyerData["localPlayers"][0]["favoritesLevelIds"].append(string)
+            playerData["localPlayers"][0]["favoritesLevelIds"].append(string)
             playerDataFile.seek(0)
-            json.dump(palyerData, playerDataFile)
+            json.dump(playerData, playerDataFile)
             
     def id2hash(id: str) -> str:
         r = requests.get("https://api.beatsaver.com/maps/id/{}".format(id))
         r.raise_for_status()
         hash = r.json()["versions"][0]["hash"]
         return hash
+    
+    def getSongs(self) -> List[Level]:
+        songList = []
+        for folder in os.listdir(self.customSongsPath):
+            if not "(Built in)" in folder:
+                songList.append(Level(os.path.join(self.customSongsPath, folder)))
+                
+        return songList

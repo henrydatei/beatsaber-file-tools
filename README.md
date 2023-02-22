@@ -4,7 +4,7 @@ A Python package to interact with Beatsaber (it's not a Beatsaber mod!)
 ### Usage
 Download `beatsaber-file-tools.py` and place it in the same location as your script. Then
 ```python
-from beatsaber-file-tools import BeatsaberFileTool
+from BeatsaberFileTool import BeatsaberFileTool
 
 # path is mostly "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber"
 bs = BeatsaberFileTool("path to your Beatsaber files")
