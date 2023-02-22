@@ -2,7 +2,7 @@
 A Python package to interact with Beatsaber (it's not a Beatsaber mod!)
 
 ### Usage
-Download `beatsaber-file-tools.py` and place it in the same location as your script. Then
+Clone the repo and place a file with the following content in it.
 ```python
 from BeatsaberFileTool import BeatsaberFileTool
 
