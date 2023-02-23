@@ -10,6 +10,9 @@ class Level:
     beatsaver_id: Optional[str] = dataclasses.field(init = False)
     files: List[str] = dataclasses.field(init = False)
     hash: str = dataclasses.field(init = False)
+    songName: str = dataclasses.field(init = False)
+    songAuthor: str = dataclasses.field(init = False)
+    levelAuthor: str = dataclasses.field(init = False)
     
     def __post_init__(self):
         self.beatsaver_id = self.foldername.split("\\")[-1].split(" ")[0]
@@ -34,3 +37,8 @@ class Level:
                 beatmapFile = difficultyBeatmap["_beatmapFilename"]
                 hasher.update(open(os.path.join(self.foldername, beatmapFile), "rb").read())
         self.hash = hasher.hexdigest().upper()
+        
+        # song name etc
+        self.songName = info["_songName"]
+        self.songAuthor = info["_songAuthorName"]
+        self.levelAuthor = info["_levelAuthorName"]

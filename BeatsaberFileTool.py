@@ -7,6 +7,7 @@ import json
 from typing import List
 
 from classes.Level import Level
+from classes.Playlist import Playlist
 
 @dataclasses.dataclass
 class BeatsaberFileTool:
@@ -15,6 +16,7 @@ class BeatsaberFileTool:
     def __post_init__(self):
         self.customSongsPath = os.path.join(self.path, "Beat Saber_Data\CustomLevels")
         self.votedSongsPath = os.path.join(self.path, "UserData\\votedSongs.json")
+        self.playlistPath = os.path.join(self.path, "Playlists")
         self.playerDataPath = os.path.join(os.getenv("APPDATA"), "..\\LocalLow\\Hyperbolic Magnetism\\Beat Saber\\PlayerData.dat")
         
     def downloadMapFromBeatsaver(self, hash: str) -> None:
@@ -62,3 +64,11 @@ class BeatsaberFileTool:
                 songList.append(Level(os.path.join(self.customSongsPath, folder)))
                 
         return songList
+    
+    def getPlaylists(self) -> List[Playlist]:
+        playlistList = []
+        for file in os.listdir(self.playlistPath):
+            if file.endswith(".bplist"):
+                playlistList.append(Playlist(os.path.join(self.playlistPath, file)))
+                
+        return playlistList
