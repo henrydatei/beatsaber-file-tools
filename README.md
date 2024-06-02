@@ -24,7 +24,7 @@ duplicateSongs = bs.listDuplicateSongs()
 print(duplicateSongs)
 bs.removeDuplicateSongs()
 ```
-When you use BSManager to manage different version of Beat Saber, you'll likely have a folder for all songs which get synced through different version of Beatsaber. To work with this CustomLevels folder, do:
+When you use [BSManager](https://github.com/Zagrios/bs-manager) to manage different version of Beat Saber, you'll likely have a folder for all songs which get synced through different version of Beatsaber. To work with this CustomLevels folder, do:
 ```python
 from BeatsaberFileTool import BeatsaberFileTool
 
