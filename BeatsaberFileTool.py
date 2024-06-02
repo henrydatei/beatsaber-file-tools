@@ -4,10 +4,12 @@ import requests
 import re
 from zipfile import ZipFile
 import json
-from typing import List
+from typing import List, Tuple
+import shutil
 
 from classes.Level import Level
 from classes.Playlist import Playlist
+from classes.HighScore import HighScore
 
 @dataclasses.dataclass
 class BeatsaberFileTool:
@@ -51,7 +53,7 @@ class BeatsaberFileTool:
             playerDataFile.seek(0)
             json.dump(playerData, playerDataFile)
             
-    def id2hash(id: str) -> str:
+    def id2hash(self, id: str) -> str:
         r = requests.get("https://api.beatsaver.com/maps/id/{}".format(id))
         r.raise_for_status()
         hash = r.json()["versions"][0]["hash"]
@@ -72,3 +74,40 @@ class BeatsaberFileTool:
                 playlistList.append(Playlist(os.path.join(self.playlistPath, file)))
                 
         return playlistList
+    
+    def getHighScores(self) -> List[HighScore]:
+        highscores = []
+        with open(self.playerDataPath, "r") as playerDataFile:
+            playerData = json.load(playerDataFile)
+            for score in playerData["localPlayers"][0]["levelsStatsData"]:
+                highscores.append(HighScore(score["levelId"], score["difficulty"], score["beatmapCharacteristicName"], score["highScore"], score["maxCombo"], score["fullCombo"], score["maxRank"], score["validScore"], score["playCount"]))
+                
+        return highscores
+    
+    def listDuplicateSongs(self) -> List[Tuple[str, str]]:
+        pattern = re.compile(r'^[0-9a-f]+')
+        ids_folders = []
+        duplicates = []
+        folders = os.listdir(self.customSongsPath)
+        for folder in folders:
+            match = pattern.match(folder)
+            if match:
+                id = match.group(0)
+                ids_folders.append((id, folder))
+            else:
+                print("Could not match ID in folder name. Skipping.", folder)
+                
+        for id, folder in ids_folders:
+            for id2, folder2 in ids_folders:
+                if id == id2 and folder != folder2:
+                    duplicates.append((folder, folder2))
+                
+        return duplicates
+    
+    def removeDuplicateSongs(self) -> None:
+        duplicates = self.listDuplicateSongs()
+        for folder, folder2 in duplicates:
+            # check if the folder exists and if its not empty, then remove duplicate folder2
+            if os.path.exists(os.path.join(self.customSongsPath, folder)) and os.listdir(os.path.join(self.customSongsPath, folder)) != []:
+                print("Removing", folder2)
+                shutil.rmtree(os.path.join(self.customSongsPath, folder2))
