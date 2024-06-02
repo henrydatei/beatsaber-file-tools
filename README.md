@@ -14,6 +14,26 @@ bs.downloadMapFromBeatsaver(hash)
 bs.addMapToUpvotedSongs(hash)
 bs.addMapToFavedSongs(hash)
 ```
+When working with different tools, the CustomLevels folder can get full of duplicate songs. You can clean it up with the following code.
+```python
+from BeatsaberFileTool import BeatsaberFileTool
+
+# path is mostly "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber"
+bs = BeatsaberFileTool("path to your Beatsaber files")
+duplicateSongs = bs.listDuplicateSongs()
+print(duplicateSongs)
+bs.removeDuplicateSongs()
+```
+When you use BSManager to manage different version of Beat Saber, you'll likely have a folder for all songs which get synced through different version of Beatsaber. To work with this CustomLevels folder, do:
+```python
+from BeatsaberFileTool import BeatsaberFileTool
+
+# path is mostly "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber"
+bs = BeatsaberFileTool("path to your Beatsaber files")
+bs.useBS_Manager()
+print(bs.customSongsPath)
+# ...
+```
 
 ### Features
 - download a map from Beatsaver

@@ -21,6 +21,37 @@ class BeatsaberFileTool:
         self.playlistPath = os.path.join(self.path, "Playlists")
         self.playerDataPath = os.path.join(os.getenv("APPDATA"), "..\\LocalLow\\Hyperbolic Magnetism\\Beat Saber\\PlayerData.dat")
         
+    def useBS_Manager(self) -> None:
+        # check if BS Manager is installed
+        if os.path.exists(os.path.join(os.path.expanduser("~"), 'AppData', 'Roaming', 'bs-manager')):
+            bs_manager_path = self.getBS_ManagerInstallationFolder()
+            self.customSongsPath = os.path.join(bs_manager_path, "SharedContent", "SharedMaps", "CustomLevels")
+    
+    def getBS_ManagerInstallationFolder(self):
+        # Get the user's home directory
+        home_dir = os.path.expanduser("~")
+
+        # Define the path to the config file
+        config_path = os.path.join(home_dir, 'AppData', 'Roaming', 'bs-manager', 'config.json')
+
+        installation_folder = None
+
+        # Check if the config file exists
+        if os.path.exists(config_path):
+            # Open and read the config file
+            with open(config_path, 'r') as config_file:
+                config_data = json.load(config_file)
+                # Check for the 'installation-folder' key
+                if 'installation-folder' in config_data:
+                    installation_folder = os.path.join(config_data['installation-folder'], 'BSManager')
+        
+        # If the 'installation-folder' key is not found, use the Documents folder
+        if not installation_folder:
+            documents_folder = os.path.join(home_dir, 'Documents')
+            installation_folder = os.path.join(documents_folder, 'BSManager')
+
+        return installation_folder
+        
     def downloadMapFromBeatsaver(self, hash: str) -> None:
         r = requests.get("https://eu.cdn.beatsaver.com/{}.zip".format(hash))
         r.raise_for_status()
